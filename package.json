@@ -1,0 +1,14 @@
+{
+  "name": "abc",
+  "version": "0.0.1",
+  "description": "my server",
+  "scripts": {
+    "server": "nodemon index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
