@@ -10,7 +10,14 @@ server.get( '/', ( req, res ) => {
 
 server.get( '/users', ( req, res ) => {
   const users = db.getUsers()
-  res.json( users )
+  
+  if ( users ) {
+    res.status( 200 ).json( users )
+  } else {
+    res.status( 404 ).json( {
+      message: 'User not found'
+    } )
+  }
 } )
 
 server.get( '/users/:id', ( req, res ) => {
@@ -18,7 +25,7 @@ server.get( '/users/:id', ( req, res ) => {
   const user = db.getUserById( userId )
 
   if ( user ) {
-    res.json( user )
+    res.status( 200 ).json( user )
   } else {
     res.status( 404 ).json( {
       message: 'User not found'
@@ -27,13 +34,15 @@ server.get( '/users/:id', ( req, res ) => {
 } )
 
 server.post( '/users', ( req, res ) => {
-  if ( !req.body.name ) {
+  const name = req.body.name
+
+  if ( !name ) {
     return res.status( 400 ).json( {
       message: 'Please enter a user name'
     } )
   }
   const newUser = db.createUser( {
-    name: req.body.name
+    name: name
   } )
 
   res.status( 201 ).json( newUser )
@@ -42,11 +51,17 @@ server.post( '/users', ( req, res ) => {
 server.put( "/users/:id", ( req, res ) => {
   const user = db.getUserById( req.params.id )
 
+  if ( !req.body.name ) {
+    res.status( 400 ).json( {
+      message: 'Request invalid, please enter username'
+    } )
+  }
+
   if ( user ) {
     const updatedUser = db.updateUser( user.id, {
       name: req.body.name || user.name
     } )
-    res.json( updatedUser )
+    res.status( 200 ).json( updatedUser )
   } else {
     res.status( 404 ).json( {
       message: 'User not found'
